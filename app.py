@@ -14,9 +14,12 @@ def index():
 	requestip = request.remote_addr
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	cursor.execute("INSERT INTO ipdata (ip) VALUES ('" + requestip + "')")
+	cursor.execute("INSERT INTO iplist (ip) VALUES ('" + requestip + "')")
 	conn.commit()
-	return 'Index Page'
+	cursor.execute("SELECT * FROM iplist order by id desc limit 10;")
+	ip_list = cursor.fetchall()
+	conn.close()
+	return str(ip_list)
 
 @app.route('/hello')
 def hello():
