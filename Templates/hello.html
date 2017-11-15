@@ -2,6 +2,25 @@
 
 {% block body %}
 
-<p>Hello there.</p>
+<div class="container">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>IP</th>
+				<th>Timestamp</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for row in ip_list %}	
+			<tr>
+			{% for data in row %}
+				<td>{{ data }}</td>
+			{% endfor %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
 
 {% endblock %}
