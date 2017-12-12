@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="container">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>File</th>
+				<th>Report</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for obj in bucket.objects.all() %}	
+			<tr>
+				<td>
+					{{ obj.key }}
+				</td>
+				<td>
+					<a href="/{{ obj.key}}" class="btn btn-info" role="button">Action</a>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+
+{% endblock %}

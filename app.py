@@ -1,6 +1,10 @@
-from flask import Flask, request, render_template, jsonify, redirect
+from flask import Flask, request, render_template, jsonify, redirect, flash
 from werkzeug.utils import secure_filename
 from flaskext.mysql import MySQL
+from dxfparser import *
+import boto3
+import shutil
+
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -13,11 +17,18 @@ mysql.init_app(app)
 
 from helpers import *
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['dxf', 'eps'])
+
+s3 = boto3.resource(
+	"s3",
+	aws_access_key_id=S3_KEY,
+	aws_secret_access_key=S3_SECRET
+	)
+bucket = s3.Bucket('dxfstorage')
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def index():
@@ -55,13 +66,31 @@ def upload_file():
 		if file and allowed_file(file.filename):
 			file.filename = secure_filename(file.filename)
 			output = upload_file_to_s3(file, app.config["S3_BUCKET"])
-			return str("{}{}".format(app.config["S3_LOCATION"], file.filename))
-
+			file_loc = str("{}{}".format(app.config["S3_LOCATION"], file.filename))
+			flash('Upload successful!')
+			return redirect("/dxflist")
 		else:
 			return redirect("/upload")
 	else:
 		print(app.config["S3_LOCATION"])
 		return render_template('upload.html')
+
+@app.route("/dxflist", methods=["GET"])
+def dxflist():
+	return render_template('dxflist.html', bucket=bucket)
+
+@app.route("/<dxffile>", methods=["GET"])
+def dxf_report(dxffile):
+	os.mkdir('tmp')
+	#Download the file corresponding with the URL
+	bucket.download_file(dxffile, f'tmp/{dxffile}')
+	#Convert it to an eps/parse it
+	convert_dxf(f'tmp/{dxffile}')
+	eps_filename = os.path.splitext(dxffile)[0] + ".eps"
+	bucket.upload_file(f'tmp/{eps_filename}', eps_filename)
+	shutil.rmtree('tmp')
+
+	return render_template('report.html', dxffile=dxffile)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True, port=4999)
