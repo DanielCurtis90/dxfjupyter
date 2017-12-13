@@ -79,18 +79,22 @@ def upload_file():
 def dxflist():
 	return render_template('dxflist.html', bucket=bucket)
 
-@app.route("/<dxffile>", methods=["GET"])
+@app.route("/reports/<dxffile>", methods=["GET"])
 def dxf_report(dxffile):
-	os.mkdir('tmp')
+	if not os.path.isdir("tmp"):
+		os.mkdir('tmp')
 	#Download the file corresponding with the URL
 	bucket.download_file(dxffile, f'tmp/{dxffile}')
-	#Convert it to an eps/parse it
-	convert_dxf(f'tmp/{dxffile}')
+	#Convert it to an eps/parse it and save the dictionaries of insert and blocks
+	block_dict, insert_dict = convert_dxf(f'tmp/{dxffile}')
 	eps_filename = os.path.splitext(dxffile)[0] + ".eps"
+	#upload the eps under the same name
 	bucket.upload_file(f'tmp/{eps_filename}', eps_filename)
-	shutil.rmtree('tmp')
+	#remove the tmp folder
+	if os.path.isdir("tmp"):
+		shutil.rmtree('tmp')
 
-	return render_template('report.html', dxffile=dxffile)
+	return render_template('report.html', dxffile=dxffile, block_dict=block_dict, insert_dict=insert_dict)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True, port=4999)

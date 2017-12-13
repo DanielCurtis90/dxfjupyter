@@ -2,11 +2,23 @@
 
 {% block body %}
 
-<body>
-
-    <h1>{{ dxffile }}</h1>
-
-</body>
+<div class="container">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Block</th>
+				<th>Information</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for block in block_dict.values() %}	
+			<tr>
+				<td>{{ block.name }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
 
 {% endblock %}
 
