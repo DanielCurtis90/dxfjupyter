@@ -4,6 +4,8 @@ from flaskext.mysql import MySQL
 from dxfparser import *
 import boto3
 import shutil
+import pickle
+from helpers import *
 
 
 mysql = MySQL()
@@ -14,8 +16,6 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'python1root!'
 app.config['MYSQL_DATABASE_DB'] = 'ipdata'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
-
-from helpers import *
 
 ALLOWED_EXTENSIONS = set(['dxf', 'eps'])
 
@@ -86,6 +86,8 @@ def dxf_report(dxffile):
 	#Download the file corresponding with the URL
 	bucket.download_file(dxffile, f'tmp/{dxffile}')
 	#Convert it to an eps/parse it and save the dictionaries of insert and blocks
+	#Note that the dictionaries are defined outside of this route so that this 
+	#information is saved
 	block_dict, insert_dict = convert_dxf(f'tmp/{dxffile}')
 	eps_filename = os.path.splitext(dxffile)[0] + ".eps"
 	#upload the eps under the same name
@@ -94,7 +96,25 @@ def dxf_report(dxffile):
 	if os.path.isdir("tmp"):
 		shutil.rmtree('tmp')
 
+	#Store the dictonaries for later use
+	if not os.path.isdir("objs"):
+		os.mkdir('objs')
+	#Setup file handlers and serialize(pickle) the object dictionaries
+	blockfile = open(f'objs/{os.path.splitext(dxffile)[0]}' + '_block_dict.obj', 'wb')
+	insertfile = open(f'objs/{os.path.splitext(dxffile)[0]}' + '_insert_dict.obj', 'wb')
+	pickle.dump(block_dict, blockfile)
+	pickle.dump(insert_dict, insertfile)
+
 	return render_template('report.html', dxffile=dxffile, block_dict=block_dict, insert_dict=insert_dict)
+
+@app.route("/reports/<dxffile>/<block>", methods=["GET"])
+def block_info_base(dxffile, block):
+	
+	blockfile = open(f'objs/{os.path.splitext(dxffile)[0]}' + '_block_dict.obj', 'rb')
+	block_dict = pickle.load(blockfile)
+	blockref = block_dict[block]
+	return render_template('block_info_base.html', block=blockref, dxffile=dxffile)
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True, port=4999)

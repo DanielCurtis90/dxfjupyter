@@ -6,15 +6,16 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th>Block</th>
-				<th>Information</th>
+				<th>Entity Type</th>
+				<th>Number of Entities</th>
 			</tr>
 		</thead>
 		<tbody>
-		{% for block in block_dict.values() %}	
+		{% for type in block.types %}	
 			<tr>
-				<td>{{ block.name }}</td>
-				<td><a href="/reports/{{dxffile}}/{{block.name}}" class="btn btn-info" role="button">Details</a></td>
+				<td>{{ type }}</td>
+				{% set num_call = "num" + type %}
+				<td>{{ block[num_call] }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

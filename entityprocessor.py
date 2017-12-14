@@ -68,15 +68,24 @@ class INSERT:
 class BLOCK:
 	def __init__(self, block_ref):
 		self.name = block_ref.name
+		#List for the types of entity in this block
+		self.types = []
 		#Go through each type of block entity and add them to lists of their type
 		#Define the tag and prompt attributes from the ATTDEF blockentity
 		for block_entity in block_ref:
 			if block_entity.dxftype() == "LWPOLYLINE":
+				if "lwpolylines" not in self.types:
+					self.types.append("lwpolylines")
 				self.lwpolylines = []
 				self.lwpolylines.append(LWPOLYLINE(block_entity))
+				self.numlwpolylines = len(self.lwpolylines)
 			elif block_entity.dxftype() == "ATTDEF":
+				if "attdef" not in self.types:
+					self.types.append("attdef")
 				self.tag = block_entity.dxf.tag
 				self.prompt = block_entity.dxf.prompt
+				self.numattdef = "N/A"
+
 
 def insertcoord_shift(insert_dict):
 	x_coords = []
