@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h2>List of {{entity}}</h2>
+
+<div class="container">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Number</th>
+				<th>Vertices</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% set entity_name = entity %}
+		{% for e in block[entity] %}	
+			<tr>
+				<td>{{ loop.index }}</td>
+				<td>
+				{% for v in e.vertices %}	
+					Vertex {{ loop.index }} (X, Y, Start Width, End Width, Bulge): {{ v.xpoint }}, {{ v.ypoint }}, {{ v.startw }}, {{ v.endw }}, {{ v.bulge }} <br/>
+				{% endfor %}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}
+
+

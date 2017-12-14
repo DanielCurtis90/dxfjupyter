@@ -115,6 +115,14 @@ def block_info_base(dxffile, block):
 	blockref = block_dict[block]
 	return render_template('block_info_base.html', block=blockref, dxffile=dxffile)
 
+@app.route("/reports/<dxffile>/<block>/<entity>", methods=["GET"])
+def block_info_entity(dxffile, block, entity):
+	
+	blockfile = open(f'objs/{os.path.splitext(dxffile)[0]}' + '_block_dict.obj', 'rb')
+	block_dict = pickle.load(blockfile)
+	blockref = block_dict[block]
+	return render_template('block_info_entity.html', block=blockref, dxffile=dxffile, entity=entity)
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True, port=4999)
