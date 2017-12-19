@@ -4,6 +4,29 @@
 
 <div class="container">
 	<table class="table table-striped">
+		<h2>Table of INSERT Entities (Block References)</h2>
+		<thead>
+			<tr>
+				<th>ID Number</th>
+				<th>Assigned Block</th>
+				<th>Block Details</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for insert in insert_dict.values() %}	
+			<tr>
+				<td>{{ insert.ID }}</td>
+				<td>{{ insert.name }}</td>
+				<td><a href="/reports/{{dxffile}}/{{block_dict[insert.name].name}}" class="btn btn-info" role="button">Details</a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<div class="container">
+	<table class="table table-striped">
+		<h2>Table of Blocks</h2>
 		<thead>
 			<tr>
 				<th>Block</th>
