@@ -1,5 +1,5 @@
 #Python file 
-#TABLE 01: ('00', 'TABLE_NUMBER', [[25.456, 0.0, 0, 0, 0, 50.912, 25.45584412271637, 0, 0, 0, 25.456, 50.91168824543093, 0, 0, 0, 0.0, 25.45584412271637, 0, 0, 0]])
+
 import os, sys
 from entityprocessor import *
 

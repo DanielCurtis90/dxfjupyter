@@ -2,8 +2,7 @@ import ezdxf
 from entityprocessor import *
 from drawer import *
 
-#Make sure we're only taking in dxf files
-
+#Make sure we are only taking in dxf files
 
 def convert_dxf(dxffile):
 
@@ -11,7 +10,6 @@ def convert_dxf(dxffile):
 	parsed_dxf = ezdxf.readfile(dxffile)
 
 	modelspace = parsed_dxf.modelspace()
-
 	layers = parsed_dxf.layers
 
 	#Iterate through the Block space and extract the Entities within them

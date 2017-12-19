@@ -21,10 +21,9 @@ class LWPOLYLINE:
 		#As the amount of vertices in a LWPOLYLINE can be any number, we need to create a list
 		vertices = []
 		#Returns a list of vertex information (another list)
-
 		for point in entity.get_points():
 			vertices.append(VERTEX(point))
-		#Zero the coordinates
+		#Zero the coordinates (no negatives)
 		x_coords = []
 		y_coords = []
 		for vertex in vertices:
