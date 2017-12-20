@@ -9,6 +9,10 @@
 			<tr>
 				<th>ID Number</th>
 				<th>Assigned Block</th>
+				<th>Rotation (Degrees)</th>
+				<th>Scaling Factors (X, Y, Z)</th>
+				<th>Row Count and Spacing</th>
+				<th>Column Count and Spacing</th>				
 				<th>Block Details</th>
 			</tr>
 		</thead>
@@ -17,6 +21,10 @@
 			<tr>
 				<td>{{ insert.ID }}</td>
 				<td>{{ insert.name }}</td>
+				<td>{{ insert.rotation }}</td>
+				<td>({{ insert.xscale }}, {{ insert.yscale }}, {{ insert.zscale }})</td>
+				<td>Row Count: {{ insert.rowcount }}</br>Row Spacing: {{ insert.rowspacing }}</td>
+				<td>Column Count: {{ insert.columncount }}</br>Column Spacing: {{ insert.columnspacing }}</td>
 				<td><a href="/reports/{{dxffile}}/{{block_dict[insert.name].name}}" class="btn btn-info" role="button">Block Details</a></td>
 			</tr>
 		{% endfor %}

@@ -18,24 +18,27 @@ def blocks_to_eps(block_dict, INSERT):
 	block_string = []
 	Refd_Block = block_dict[INSERT.name]
 	#Check entities to draw
+	block_string.append(f"{INSERT.xpoint} {INSERT.ypoint} moveto\n({INSERT.ID}) show\n2 setlinewidth\n0.5 setgray\nstroke\n")
 	if hasattr(Refd_Block, 'lwpolylines'):
-		#get the starting point and move to it
-		first_x = Refd_Block.lwpolylines[0].vertices[0].xpoint
-		first_y = Refd_Block.lwpolylines[0].vertices[0].ypoint
-		block_string.append(f"{first_x + INSERT.xpoint} {first_y + INSERT.ypoint} moveto\n")
-		#iterate over remaining vertices (based on where the x coordinate for the second vertex is stored)
-		for vertex in Refd_Block.lwpolylines[0].vertices[1:]:
-			block_string.append(f"{vertex.xpoint + INSERT.xpoint} {vertex.ypoint + INSERT.ypoint} lineto\n")
-		block_string.append(f"closepath\n({INSERT.ID}) show\n2 setlinewidth\n0.5 setgray\nstroke\n")
+		for lwp in Refd_Block.lwpolylines:
+			#get the starting point and move to it
+			first_x = lwp.vertices[0].xpoint
+			first_y = lwp.vertices[0].ypoint
+			block_string.append(f"{first_x + INSERT.xpoint} {first_y + INSERT.ypoint} moveto\n")
+			#iterate over remaining vertices (based on where the x coordinate for the second vertex is stored)
+			for vertex in lwp.vertices[1:]:
+				block_string.append(f"{vertex.xpoint + INSERT.xpoint} {vertex.ypoint + INSERT.ypoint} lineto\n")
+			block_string.append(f"closepath\n2 setlinewidth\n0.5 setgray\nstroke\n")
 	if hasattr(Refd_Block, 'lines'):
-		#get the starting point and move to it
-		first_x = Refd_Block.lines[0].vertices[0].xpoint
-		first_y = Refd_Block.lines[0].vertices[0].ypoint
-		block_string.append(f"{first_x + INSERT.xpoint} {first_y + INSERT.ypoint} moveto\n")
-		#iterate over remaining vertices (based on where the x coordinate for the second vertex is stored)
-		for vertex in Refd_Block.lines[0].vertices[1:]:
-			block_string.append(f"{vertex.xpoint + INSERT.xpoint} {vertex.ypoint + INSERT.ypoint} lineto\n")
-		block_string.append(f"closepath\n({INSERT.ID}) show\n2 setlinewidth\n0.5 setgray\nstroke\n")
+		for ln in Refd_Block.lines:
+			#get the starting point and move to it
+			first_x = ln.vertices[0].xpoint
+			first_y = ln.vertices[0].ypoint
+			block_string.append(f"{first_x + INSERT.xpoint} {first_y + INSERT.ypoint} moveto\n")
+			#iterate over remaining vertices (based on where the x coordinate for the second vertex is stored)
+			for vertex in ln.vertices[1:]:
+				block_string.append(f"{vertex.xpoint + INSERT.xpoint} {vertex.ypoint + INSERT.ypoint} lineto\n")
+			block_string.append(f"closepath\n2 setlinewidth\n0.5 setgray\nstroke\n")
 	return block_string
 
 def draw_eps(shifted_dict, block_dict, dxffile):

@@ -72,7 +72,6 @@ def upload_file():
 		else:
 			return redirect("/upload")
 	else:
-		print(app.config["S3_LOCATION"])
 		return render_template('upload.html')
 
 @app.route("/dxflist", methods=["GET"])

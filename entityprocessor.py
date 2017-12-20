@@ -75,7 +75,11 @@ class INSERT:
 		self.zscale = entity.dxf.zscale
 		self.xpoint = entity.dxf.insert[0] 
 		self.ypoint = entity.dxf.insert[1] 
-		self.zpoint = entity.dxf.insert[2] 
+		self.zpoint = entity.dxf.insert[2]
+		self.rowcount = entity.dxf.row_count
+		self.rowspacing = entity.dxf.row_spacing
+		self.columncount = entity.dxf.column_count
+		self.columnspacing = entity.dxf.column_spacing
 
 class BLOCK:
 	def __init__(self, block_ref):
@@ -88,13 +92,13 @@ class BLOCK:
 			if block_entity.dxftype() == "LWPOLYLINE":
 				if "lwpolylines" not in self.types:
 					self.types.append("lwpolylines")
-				self.lwpolylines = []
+					self.lwpolylines = []
 				self.lwpolylines.append(LWPOLYLINE(block_entity))
 				self.numlwpolylines = len(self.lwpolylines)
-			if block_entity.dxftype() == "LINE":
+			elif block_entity.dxftype() == "LINE":
 				if "lines" not in self.types:
 					self.types.append("lines")
-				self.lines = []
+					self.lines = []
 				self.lines.append(LINE(block_entity))
 				self.numlines = len(self.lines)
 			elif block_entity.dxftype() == "ATTDEF":
