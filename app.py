@@ -87,7 +87,7 @@ def dxf_report(dxffile):
 	#Convert it to an eps/parse it and save the dictionaries of insert and blocks
 	#Note that the dictionaries are defined outside of this route so that this 
 	#information is saved
-	block_dict, insert_dict = convert_dxf(f'tmp/{dxffile}')
+	block_dict, insert_dict, layers = convert_dxf(f'tmp/{dxffile}')
 	eps_filename = os.path.splitext(dxffile)[0] + ".eps"
 	#upload the eps under the same name
 	bucket.upload_file(f'tmp/{eps_filename}', eps_filename)
@@ -103,8 +103,7 @@ def dxf_report(dxffile):
 	insertfile = open(f'objs/{os.path.splitext(dxffile)[0]}' + '_insert_dict.obj', 'wb')
 	pickle.dump(block_dict, blockfile)
 	pickle.dump(insert_dict, insertfile)
-
-	return render_template('report.html', dxffile=dxffile, block_dict=block_dict, insert_dict=insert_dict)
+	return render_template('report.html', dxffile=dxffile, block_dict=block_dict, insert_dict=insert_dict, layers=layers)
 
 @app.route("/reports/<dxffile>/<block>", methods=["GET"])
 def block_info_base(dxffile, block):
