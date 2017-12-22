@@ -74,6 +74,18 @@ class CIRCLE:
 		self.vertices = zero_and_round(vertices)
 		self.radius = entity.dxf.radius
 
+class MTEXT:
+	def __init__(self, entity):
+		#As the amount of vertices in a LINE can be any number, we need to create a list
+		vertices = []
+		#Returns a list of vertex information (another list)
+		vertices.append(VERTEX(entity.dxf.insert))
+
+		self.vertices = zero_and_round(vertices)
+		self.charheight = entity.dxf.char_height
+		self.width = entity.dxf.width
+		self.text = entity.get_text()
+
 class INSERT:
 	def __init__(self, entity):
 		for attrib in entity.attribs():
@@ -125,6 +137,12 @@ class BLOCK:
 					self.circles = []
 				self.circles.append(CIRCLE(block_entity))
 				self.numcircles = len(self.circles)
+			elif block_entity.dxftype() == "MTEXT":
+				if "mtexts" not in self.types:
+					self.types.append("mtexts")
+					self.mtexts = []
+				self.mtexts.append(MTEXT(block_entity))
+				self.nummtexts = len(self.mtexts)	
 			elif block_entity.dxftype() == "ATTDEF":
 				if "attdef" not in self.types:
 					self.types.append("attdef")

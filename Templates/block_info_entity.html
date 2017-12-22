@@ -10,6 +10,15 @@
 			<tr>
 				<th>Number</th>
 				<th>Vertices</th>
+				{% if entity == 'circles' or entity == 'arcs' %}
+					<th>Radius</th>
+				{% endif %}
+				{% if entity == 'arcs' %}
+					<th>Angles</th>
+				{% endif %}
+				{% if entity == 'mtexts' %}
+					<th>Text Details</th>
+				{% endif %}
 			</tr>
 		</thead>
 		<tbody>
@@ -19,9 +28,21 @@
 				<td>{{ loop.index }}</td>
 				<td>
 				{% for v in e.vertices %}	
-					Vertex {{ loop.index }} (X, Y, Start Width, End Width, Bulge): {{ v.xpoint }}, {{ v.ypoint }}, {{ v.startw }}, {{ v.endw }}, {{ v.bulge }} <br/>
+					Vertex {{ loop.index }} (X, Y): {{ v.xpoint }}, {{ v.ypoint }}<br>
+					{% if entity == 'lwpolylines' %}
+						 Start Width, End Width, Bulge: {{ v.startw }}, {{ v.endw }}, {{ v.bulge }}<br>
+					{% endif %}
 				{% endfor %}
 				</td>
+				{% if entity == 'circles' or entity == 'arcs' %}
+					<td>{{ e.radius }}<br></td>
+				{% endif %}
+				{% if entity == 'arcs' %}
+					<td>Start: {{ e.startangle }}<br>End Angle: {{ e.endangle }}<br></td>
+				{% endif %}
+				{% if entity == 'mtexts' %}
+					<td>String: {{ e.text }}<br>Height and Width: {{ e.charheight }}, {{ e.width }}<br></td>
+				{% endif %}
 			</tr>
 		{% endfor %}
 		</tbody>
@@ -29,5 +50,4 @@
 </div>
 
 {% endblock %}
-
 
