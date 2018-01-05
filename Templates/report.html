@@ -35,6 +35,7 @@
 				<th>Assigned Block</th>
 				<th>Layer</th>
 				<th>Coordinates</br>(X, Y)</th>
+				<th>Handle (Circle and LWPolyline only)</th>
 				<th>Rotation</br>(Degrees)</th>
 				<th>Scaling Factors</br>(X, Y)</th>
 				<th>Row Count and Spacing</th>
@@ -49,6 +50,21 @@
 				<td>{{ insert.name }}</td>
 				<td>{{ insert.layer }}</td>
 				<td>({{ insert.xpoint }}, {{insert.ypoint }})</td>
+	
+				{% if 'lwpolylines' in block_dict[insert.name].types %}
+					<td>
+					{% for lw in block_dict[insert.name].lwpolylines %}
+						{{ lw.handle }}</td>
+					{% endfor %}
+				{% elif 'circles' in block_dict[insert.name].types %}
+					<td>
+					{% for c in block_dict[insert.name].circles %}
+						{{ c.handle }}</td>
+					{% endfor %}				
+				{% else %}
+					<td></td>
+				{% endif %}
+
 				<td>{{ insert.rotation }}</td>
 				<td>({{ insert.xscale }}, {{ insert.yscale }})</td>
 				<td>Row Count: {{ insert.rowcount }}</br>Row Spacing: {{ insert.rowspacing }}</td>

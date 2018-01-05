@@ -30,7 +30,7 @@ def convert_dxf(dxffile):
 	#Zero the INSERT coordinates           
 	shifted_dict = (insertcoord_shift(insert_dict))
 
-	draw_eps(shifted_dict, block_dict, dxffile)
+	#draw_eps(shifted_dict, block_dict, dxffile)
 
 	return (block_dict, shifted_dict, layers)
 

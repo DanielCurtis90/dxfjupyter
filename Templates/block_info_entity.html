@@ -10,6 +10,7 @@
 			<tr>
 				<th>Number</th>
 				<th>Vertices</th>
+				<th>Handle</th>
 				{% if entity == 'circles' or entity == 'arcs' %}
 					<th>Radius</th>
 				{% endif %}
@@ -34,6 +35,7 @@
 					{% endif %}
 				{% endfor %}
 				</td>
+				<td>{{ e.handle }}</td>
 				{% if entity == 'circles' or entity == 'arcs' %}
 					<td>{{ e.radius }}<br></td>
 				{% endif %}

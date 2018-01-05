@@ -90,7 +90,7 @@ def dxf_report(dxffile):
 	block_dict, insert_dict, layers = convert_dxf(f'tmp/{dxffile}')
 	eps_filename = os.path.splitext(dxffile)[0] + ".eps"
 	#upload the eps under the same name
-	bucket.upload_file(f'tmp/{eps_filename}', eps_filename)
+	#bucket.upload_file(f'tmp/{eps_filename}', eps_filename)
 	#remove the tmp folder
 	if os.path.isdir("tmp"):
 		shutil.rmtree('tmp')
@@ -107,7 +107,6 @@ def dxf_report(dxffile):
 
 @app.route("/reports/<dxffile>/<block>", methods=["GET"])
 def block_info_base(dxffile, block):
-	
 	blockfile = open(f'objs/{os.path.splitext(dxffile)[0]}' + '_block_dict.obj', 'rb')
 	block_dict = pickle.load(blockfile)
 	blockref = block_dict[block]
