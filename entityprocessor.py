@@ -41,7 +41,9 @@ class LWPOLYLINE:
 		for point in entity.get_points():
 			vertices.append(VERTEX(point))
 		self.vertices = zero_and_round(vertices)
+		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
+		self.type = entity.dxftype()
 
 class LINE:
 	def __init__(self, entity):
@@ -50,8 +52,10 @@ class LINE:
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.start))
 		vertices.append(VERTEX(entity.dxf.end))
-		self.handle = entity.dxf.handle
 		self.vertices = zero_and_round(vertices)
+		self.layer = entity.dxf.layer
+		self.handle = entity.dxf.handle
+		self.type = entity.dxftype()
 
 class ARC:
 	def __init__(self, entity):
@@ -64,7 +68,9 @@ class ARC:
 		self.radius = entity.dxf.radius
 		self.startangle = entity.dxf.start_angle
 		self.endangle = entity.dxf.end_angle
+		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
+		self.type = entity.dxftype()
 
 class CIRCLE:
 	def __init__(self, entity):
@@ -75,7 +81,9 @@ class CIRCLE:
 
 		self.vertices = zero_and_round(vertices)
 		self.radius = entity.dxf.radius
+		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
+		self.type = entity.dxftype()
 
 class MTEXT:
 	def __init__(self, entity):
@@ -88,7 +96,15 @@ class MTEXT:
 		self.charheight = entity.dxf.char_height
 		self.width = entity.dxf.width
 		self.text = entity.get_text()
+		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
+		self.type = entity.dxftype()
+
+class BASE_ENTITY:
+	def __init__(self, entity):
+		self.layer = entity.dxf.layer
+		self.handle = entity.dxf.handle
+		self.type = entity.dxftype()
 
 class INSERT:
 	def __init__(self, entity):
