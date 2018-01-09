@@ -4,13 +4,30 @@
 
 <div class="container">
 	<table class="table table-striped">
+		<h2>Downloads</h2>
+		<thead>
+			<tr>
+				<th>CSV File</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><a href="/reports/{{dxffile}}/download" class="btn btn-info" role="button">Download</a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<div class="container">
+	<table class="table table-striped">
 		<h2>Layer Summary</h2>
 		<thead>
 			<tr>
-				<th>Layers</th>
-				<th>Enabled?</th>
-				<th>Locked?</th>
-				<th>Frozen?</th>
+				<th>Layer</th>
+				<th>Enabled</th>
+				<th>Locked</th>
+				<th>Frozen</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -35,7 +52,7 @@
 				<th>Assigned Block</th>
 				<th>Layer</th>
 				<th>Coordinates</br>(X, Y)</th>
-				<th>Handle (Circle and LWPolyline only)</th>
+				<th>List of Circle and LWPolyline Handles</th>
 				<th>Rotation</br>(Degrees)</th>
 				<th>Scaling Factors</br>(X, Y)</th>
 				<th>Row Count and Spacing</th>

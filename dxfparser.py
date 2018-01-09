@@ -46,5 +46,7 @@ def convert_dxf(dxffile):
 
 	#draw_eps(shifted_dict, block_dict, dxffile)
 
+	create_csv(insert_dict, block_dict, dxffile)
+
 	return (block_dict, shifted_dict, base_entity_dict, layers)
 

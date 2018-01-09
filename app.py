@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, redirect, flash
+from flask import Flask, request, render_template, jsonify, redirect, flash, Response
 from werkzeug.utils import secure_filename
 from flaskext.mysql import MySQL
 from dxfparser import *
@@ -25,6 +25,12 @@ s3 = boto3.resource(
 	aws_secret_access_key=S3_SECRET
 	)
 bucket = s3.Bucket('dxfstorage')
+
+client = boto3.client(
+	"s3",
+	aws_access_key_id=S3_KEY,
+	aws_secret_access_key=S3_SECRET
+	)
 
 def allowed_file(filename):
 	return '.' in filename and \
@@ -89,6 +95,11 @@ def dxf_report(dxffile):
 	#information is saved
 	block_dict, insert_dict, base_entity_dict, layers = convert_dxf(f'tmp/{dxffile}')
 	eps_filename = os.path.splitext(dxffile)[0] + ".eps"
+	csv_filename = os.path.splitext(dxffile)[0] + ".csv"
+	
+	#upload the csv under the same name
+	bucket.upload_file(f'tmp/{csv_filename}', csv_filename)
+
 	#upload the eps under the same name
 	#bucket.upload_file(f'tmp/{eps_filename}', eps_filename)
 	#remove the tmp folder
@@ -105,7 +116,7 @@ def dxf_report(dxffile):
 	pickle.dump(block_dict, blockfile)
 	pickle.dump(insert_dict, insertfile)
 	pickle.dump(base_entity_dict, baseentityfile)
-	return render_template('report.html', dxffile=dxffile, block_dict=block_dict, insert_dict=insert_dict, base_entity_dict=base_entity_dict, layers=layers)
+	return render_template('report.html', bucket=bucket, dxffile=dxffile, block_dict=block_dict, insert_dict=insert_dict, base_entity_dict=base_entity_dict, layers=layers)
 
 @app.route("/reports/<dxffile>/<block>", methods=["GET"])
 def block_info(dxffile, block):
@@ -129,6 +140,15 @@ def block_info_entity(dxffile, block, entity):
 	blockref = block_dict[block]
 	return render_template('block_info_entity.html', block=blockref, dxffile=dxffile, entity=entity)
 
+@app.route("/reports/<dxffile>/download", methods=["GET"])
+def dxf_report_download(dxffile):
+	csv_filename = os.path.splitext(dxffile)[0] + ".csv"
+	download_file = client.get_object(Bucket=app.config["S3_BUCKET"], Key=csv_filename)
+	return Response(
+		download_file['Body'].read(),
+		mimetype='text/csv',
+		headers={"Content-Disposition": f"attachment;filename={csv_filename}"}
+		)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True, port=4999)

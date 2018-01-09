@@ -1,4 +1,6 @@
 import ezdxf
+import csv
+import os
 
 def lwpolyline_points(entity):
 	coord_list = []
@@ -130,6 +132,12 @@ class BLOCK:
 		self.name = block_ref.name
 		#List for the types of entity in this block
 		self.types = []
+		#Initialize the numbers of each attribute for reporting
+		self.numlwpolylines = 0
+		self.numlines = 0
+		self.numcircles = 0
+		self.numarcs = 0
+		self.nummtexts = 0
 		#Go through each type of block entity and add them to lists of their type
 		#Define the tag and prompt attributes from the ATTDEF blockentity
 		for block_entity in block_ref:
@@ -191,6 +199,27 @@ def insertcoord_shift(insert_dict):
 		value.ypoint = shifty_coords[counter]
 	return shifted_dict
 
+def create_csv(shifted_dict, block_dict, dxffile):
+	with open(os.path.splitext(dxffile)[0] + ".csv", "w", newline='') as csv_file:
+		writer = csv.writer(csv_file, delimiter=',')
+		title = ["Insert ID", "Assigned Block", "Layer", "Coordinates", "Handles of LWPolylines and Circles", "Number of LWPolylines", "Number of Lines", "Number of Circles", "Number of Arcs", "Number of MTexts"]
+		writer.writerow(title)
+		for insert in shifted_dict.values():
+			coords = f"({insert.xpoint}, {insert.ypoint})"
+			handle = []
+			if 'lwpolylines' in block_dict[insert.name].types:
+				for lw in block_dict[insert.name].lwpolylines: 
+					handle.append(lw.handle)
+			elif 'circles' in block_dict[insert.name].types:
+				for c in block_dict[insert.name].circles: 
+					handle.append(c.handle)
+			else:
+				handle.append("N/A")
+			handle_str = ''.join(str(e) for e in handle)
+			info_line = [insert.ID, insert.name, insert.layer, coords, handle_str, block_dict[insert.name].numlwpolylines, block_dict[insert.name].numlines, block_dict[insert.name].numcircles, block_dict[insert.name].numarcs, block_dict[insert.name].nummtexts]
+			writer.writerow(info_line)
+
+	return None
 
 
 
