@@ -1,4 +1,5 @@
 import ezdxf
+import copy
 from entityprocessor import *
 from drawer import *
 
@@ -41,12 +42,13 @@ def convert_dxf(dxffile):
 			print(entity.dxftype())
 			base_entity_dict[entity.dxf.handle] = BASE_ENTITY(entity)
 
+	shifted_dict = copy.deepcopy(insert_dict)
 	#Zero the INSERT coordinates           
-	shifted_dict = (insertcoord_shift(insert_dict))
+	shifted_dict = insertcoord_shift(shifted_dict)
 
 	#draw_eps(shifted_dict, block_dict, dxffile)
 
-	create_csv(insert_dict, block_dict, dxffile)
+	create_csv(insert_dict, block_dict, base_entity_dict, dxffile)
 
-	return (block_dict, shifted_dict, base_entity_dict, layers)
+	return (block_dict, insert_dict, base_entity_dict, layers)
 

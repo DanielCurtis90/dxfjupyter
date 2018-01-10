@@ -1,5 +1,5 @@
 import ezdxf
-import csv
+import csv, copy
 import os
 
 def lwpolyline_points(entity):
@@ -42,7 +42,9 @@ class LWPOLYLINE:
 		#Returns a list of vertex information (another list)
 		for point in entity.get_points():
 			vertices.append(VERTEX(point))
-		self.vertices = zero_and_round(vertices)
+		raw_vertices = copy.deepcopy(vertices)
+		self.vertices = raw_vertices
+		self.zeroed_vertices = zero_and_round(vertices)
 		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
 		self.type = entity.dxftype()
@@ -54,7 +56,9 @@ class LINE:
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.start))
 		vertices.append(VERTEX(entity.dxf.end))
-		self.vertices = zero_and_round(vertices)
+		raw_vertices = copy.deepcopy(vertices)
+		self.vertices = raw_vertices
+		self.zeroed_vertices = zero_and_round(vertices)
 		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
 		self.type = entity.dxftype()
@@ -66,7 +70,9 @@ class ARC:
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.center))
 
-		self.vertices = zero_and_round(vertices)
+		raw_vertices = copy.deepcopy(vertices)
+		self.vertices = raw_vertices
+		self.zeroed_vertices = zero_and_round(vertices)
 		self.radius = entity.dxf.radius
 		self.startangle = entity.dxf.start_angle
 		self.endangle = entity.dxf.end_angle
@@ -81,7 +87,9 @@ class CIRCLE:
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.center))
 
-		self.vertices = zero_and_round(vertices)
+		raw_vertices = copy.deepcopy(vertices)
+		self.vertices = raw_vertices
+		self.zeroed_vertices = zero_and_round(vertices)
 		self.radius = entity.dxf.radius
 		self.layer = entity.dxf.layer
 		self.handle = entity.dxf.handle
@@ -94,7 +102,9 @@ class MTEXT:
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.insert))
 
-		self.vertices = zero_and_round(vertices)
+		raw_vertices = copy.deepcopy(vertices)
+		self.vertices = raw_vertices
+		self.zeroed_vertices = zero_and_round(vertices)
 		self.charheight = entity.dxf.char_height
 		self.width = entity.dxf.width
 		self.text = entity.get_text()
@@ -183,7 +193,7 @@ def insertcoord_shift(insert_dict):
 	x_coords = []
 	y_coords = []
 	shifted_dict = insert_dict
-	for value in insert_dict.values():
+	for value in shifted_dict.values():
 		#dig into the first and second entries of the embedded coordinate list to get the x and y coordinates
 		x_coords.append(value.xpoint)
 		y_coords.append(value.ypoint)
@@ -199,7 +209,7 @@ def insertcoord_shift(insert_dict):
 		value.ypoint = shifty_coords[counter]
 	return shifted_dict
 
-def create_csv(shifted_dict, block_dict, dxffile):
+def create_csv(shifted_dict, block_dict, base_entity_dict, dxffile):
 	with open(os.path.splitext(dxffile)[0] + ".csv", "w", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
 		title = ["Insert ID", "Assigned Block", "Layer", "Coordinates", "Handles of LWPolylines and Circles", "Number of LWPolylines", "Number of Lines", "Number of Circles", "Number of Arcs", "Number of MTexts"]
@@ -217,6 +227,13 @@ def create_csv(shifted_dict, block_dict, dxffile):
 				handle.append("N/A")
 			handle_str = ''.join(str(e) for e in handle)
 			info_line = [insert.ID, insert.name, insert.layer, coords, handle_str, block_dict[insert.name].numlwpolylines, block_dict[insert.name].numlines, block_dict[insert.name].numcircles, block_dict[insert.name].numarcs, block_dict[insert.name].nummtexts]
+			writer.writerow(info_line)
+
+		other_ent_title = ["Type", "Handle", "Layer", "Coordinates"]
+		writer.writerow(other_ent_title)
+		for entity in base_entity_dict.values():
+			coords = f"({entity.vertices[0].xpoint}, {entity.vertices[0].ypoint})"
+			info_line = [entity.type, entity.handle, entity.layer, coords]
 			writer.writerow(info_line)
 
 	return None
