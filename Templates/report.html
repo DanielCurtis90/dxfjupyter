@@ -52,6 +52,7 @@
 				<th>Assigned Block</th>
 				<th>Layer</th>
 				<th>Coordinates</br>(X, Y)</th>
+				<th>Insert Handle</th>
 				<th>List of Circle and LWPolyline Handles</th>
 				<th>Rotation</br>(Degrees)</th>
 				<th>Scaling Factors</br>(X, Y)</th>
@@ -67,6 +68,7 @@
 				<td>{{ insert.name }}</td>
 				<td>{{ insert.layer }}</td>
 				<td>({{ insert.xpoint }}, {{insert.ypoint }})</td>
+				<td>{{ insert.handle }}</td>
 	
 				{% if 'lwpolylines' in block_dict[insert.name].types %}
 					<td>

@@ -124,6 +124,7 @@ class INSERT:
 			self.ID = attrib.dxf.text
 		self.name = entity.dxf.name
 		self.rotation = entity.dxf.rotation
+		self.handle = entity.dxf.handle
 		self.xscale = entity.dxf.xscale
 		self.yscale = entity.dxf.yscale
 		self.zscale = entity.dxf.zscale
@@ -212,7 +213,7 @@ def insertcoord_shift(insert_dict):
 def create_csv(shifted_dict, block_dict, base_entity_dict, dxffile):
 	with open(os.path.splitext(dxffile)[0] + ".csv", "w", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
-		title = ["Insert ID", "Assigned Block", "Layer", "Coordinates", "Handles of LWPolylines and Circles", "Number of LWPolylines", "Number of Lines", "Number of Circles", "Number of Arcs", "Number of MTexts"]
+		title = ["Insert ID", "Assigned Block", "Layer", "Coordinates", "Insert Handle", "Handles of LWPolylines and Circles", "Number of LWPolylines", "Number of Lines", "Number of Circles", "Number of Arcs", "Number of MTexts"]
 		writer.writerow(title)
 		for insert in shifted_dict.values():
 			coords = f"({insert.xpoint}, {insert.ypoint})"
@@ -226,15 +227,18 @@ def create_csv(shifted_dict, block_dict, base_entity_dict, dxffile):
 			else:
 				handle.append("N/A")
 			handle_str = ''.join(str(e) for e in handle)
-			info_line = [insert.ID, insert.name, insert.layer, coords, handle_str, block_dict[insert.name].numlwpolylines, block_dict[insert.name].numlines, block_dict[insert.name].numcircles, block_dict[insert.name].numarcs, block_dict[insert.name].nummtexts]
+			info_line = [insert.ID, insert.name, insert.layer, coords, insert.handle, handle_str, block_dict[insert.name].numlwpolylines, block_dict[insert.name].numlines, block_dict[insert.name].numcircles, block_dict[insert.name].numarcs, block_dict[insert.name].nummtexts]
 			writer.writerow(info_line)
 
-		other_ent_title = ["Type", "Handle", "Layer", "Coordinates"]
-		writer.writerow(other_ent_title)
-		for entity in base_entity_dict.values():
-			coords = f"({entity.vertices[0].xpoint}, {entity.vertices[0].ypoint})"
-			info_line = [entity.type, entity.handle, entity.layer, coords]
-			writer.writerow(info_line)
+		if bool(base_entity_dict):
+			other_ent_title = ["Type", "Handle", "Layer", "Coordinates"]
+			writer.writerow(other_ent_title)
+			for entity in base_entity_dict.values():
+				coords = "Not Yet Implemented"
+				if hasattr(entity, 'vertices'):
+					coords = f"({entity.vertices[0].xpoint}, {entity.vertices[0].ypoint})"
+				info_line = [entity.type, entity.handle, entity.layer, coords]
+				writer.writerow(info_line)
 
 	return None
 
