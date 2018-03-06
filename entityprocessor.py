@@ -51,7 +51,6 @@ class LWPOLYLINE:
 
 class LINE:
 	def __init__(self, entity):
-		#As the amount of vertices in a LINE can be any number, we need to create a list
 		vertices = []
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.start))
@@ -65,7 +64,6 @@ class LINE:
 
 class ARC:
 	def __init__(self, entity):
-		#As the amount of vertices in a LINE can be any number, we need to create a list
 		vertices = []
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.center))
@@ -82,7 +80,6 @@ class ARC:
 
 class CIRCLE:
 	def __init__(self, entity):
-		#As the amount of vertices in a LINE can be any number, we need to create a list
 		vertices = []
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.center))
@@ -97,7 +94,6 @@ class CIRCLE:
 
 class MTEXT:
 	def __init__(self, entity):
-		#As the amount of vertices in a LINE can be any number, we need to create a list
 		vertices = []
 		#Returns a list of vertex information (another list)
 		vertices.append(VERTEX(entity.dxf.insert))
